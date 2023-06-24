@@ -239,8 +239,8 @@ for face in modelo['faces']:
         vertices_list.append( modelo['vertices'][vertice_id-1] )
     for texture_id in face[1]:
         textures_coord_list.append( modelo['texture'][texture_id-1] )
-    #for normal_id in face[2]:
-    #    normals_list.append( modelo['normals'][normal_id - 1])
+    for normal_id in face[2]:
+        normals_list.append( modelo['normals'][normal_id - 1])
 print('Processando modelo terreno.obj. Vertice final:',len(vertices_list))
 
 ### inserindo coordenadas de textura do modelo no vetor de texturas
@@ -345,7 +345,7 @@ glVertexAttribPointer(loc_normals_coord, 3, GL_FLOAT, False, stride, offset)
 
 # posicao da fonte de luz
 loc_light_pos = glGetUniformLocation(program, "lightPos")
-glUniform3f(loc_light_pos, -1.5, 1.7, 2.5) #posicao da fonte de luz
+glUniform3f(loc_light_pos, 0.0, 1.0, 0.0) #posicao da fonte de luz
 
 # ### Desenhando nossos modelos
 # * Cada modelo tem uma *Model* para posicioná-los no mundo.
@@ -595,12 +595,13 @@ glEnable(GL_DEPTH_TEST) ### importante para 3D
    
 
 rotacao_inc = 0
+ang = 0
 while not glfw.window_should_close(window):
 
     glfw.poll_events() 
     
-    ang = 0
-    glUniform3f(loc_light_pos, math.cos(ang)*4, 0.0, math.sin(ang)*4)
+    ang += 0.005
+    glUniform3f(loc_light_pos, math.cos(ang)*10, math.sin(ang)*10, 0.0)
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     
