@@ -16,31 +16,14 @@ largura = 1600
 window = glfw.create_window(largura, altura, "Malhas e Texturas", None, None)
 glfw.make_context_current(window)
 
-
-# ### `GLSL` (*OpenGL Shading Language*)
-# Aqui, veremos nosso primeiro código `GLSL`.
-# 
-# É uma linguagem de *shading* de alto nível baseada na linguagem de programação `C`.
-# 
-# Estamos escrevendo código `GLSL` como *strings* de uma variável (mas podemos ler de arquivos texto). Esse código, depois, terá que ser compilado e linkado ao nosso programa. 
-# 
-# Aprenderemos `GLSL` conforme a necessidade do curso. Usaremos uma versão do `GLSL` mais antiga, compatível com muitos dispositivos.
-# ### `GLSL` para *Vertex Shader*
-# No Pipeline programável, podemos interagir com *Vertex Shaders*.
-# 
-# No código abaixo, estamos fazendo o seguinte:
-# * Definindo uma variável chamada `position` do tipo `vec3`.
-# * Definindo uma variável chamada `texture_coord` do tipo `vec2`.
-# * Definindo uma variável de saída `out_texture` do tipo `vec2`.
-# * Definindo matrizes `model`, `view`, e `projection` que acumulam transformações geométricas 3D e permitem navegação no cenário.
-# * `void main()` é o ponto de entrada do nosso programa (função principal).
-# * `gl_Position` é uma variável especial do `GLSL`. Variáveis que começam com `gl_` são desse tipo. Neste caso, determina a posição de um vértice. Observe que todo vértice tem $4$ coordenadas, por isso combinamos nossa variável `vec3` com uma variável `vec4`. Além disso, modificamos nosso vetor com base nas transformações `model`, `view`, e `projection`.
-# * `out_texture` é uma variável que retorna as coordenadas de texturas normalizadas.
-
 vertex_code = """
         attribute vec3 position;
         attribute vec2 texture_coord;
+        attribute vec3 normals;
+
         varying vec2 out_texture;
+        varying vec3 out_fragPos;
+        varying vec3 out_normal;
                 
         uniform mat4 model;
         uniform mat4 view;
@@ -49,27 +32,36 @@ vertex_code = """
         void main(){
             gl_Position = projection * view * model * vec4(position,1.0);
             out_texture = vec2(texture_coord);
+            out_fragPos = vec3(position);
+            out_normal  = normals;
         }
         """
 
 
 # ### `GLSL` para *Fragment Shader*
-# No Pipeline programável, podemos interagir com *Fragment Shaders*.
-# 
-# No código abaixo, estamos fazendo o seguinte:
-# * Definindo uma variável `out_texture`, recebida do *Vertex Shader*.
-# * Definindo uma variável do tipo `Sampler2D` chamada `samplerTexture`, que receberá os texeis da imagem.
-# * `void main()` é o ponto de entrada do nosso programa (função principal).
-# * `texture` é o resultado da operação de mapeamento das coordenadas de `out_texture` em `samplerTexture`.
-# * `gl_FragColor` é uma variável especial do `GLSL`. Variáveis que começam com `gl_` são desse tipo. Neste caso, determina a cor de um fragmento de acordo com os valores de cor de uma imagem.
-
 fragment_code = """
+        uniform vec3 lightPos;
+        uniform float ka;
+        uniform float kd;
+
+        vec3 lightColor = vec3(1.0, 1.0, 1.0);
+
         varying vec2 out_texture;
+        varying vec3 out_normal;
+        varying vec3 out_fragPos;
         uniform sampler2D samplerTexture;
         
         void main(){
+            vec3 ambient = ka * lightColor;
+
+            vec3 norm = normalize(out_normal);
+            vec3 lightDir = normalize(lightPos - out_fragPos);
+            float diff = max(dot(norm, lightDir), 0.0);
+            vec3 diffuse = kd * diff * lightColor;
+
             vec4 texture = texture2D(samplerTexture, out_texture);
-            gl_FragColor = texture;
+            vec4 result = vec4((ambient + diffuse), 1.0) * texture;
+            gl_FragColor = result;
         }
         """
 
@@ -140,6 +132,7 @@ def load_model_from_file(filename):
     """Loads a Wavefront OBJ file. """
     objects = {}
     vertices = []
+    normals = []
     texture_coords = []
     faces = []
 
@@ -156,6 +149,8 @@ def load_model_from_file(filename):
         if values[0] == 'v':
             vertices.append(values[1:4])
 
+        if values[0] == 'vn':
+            normals.append(values[1:4])
 
         ### recuperando coordenadas de textura
         elif values[0] == 'vt':
@@ -167,20 +162,26 @@ def load_model_from_file(filename):
         elif values[0] == 'f':
             face = []
             face_texture = []
+            face_normals = []
             for v in values[1:]:
                 w = v.split('/')
                 face.append(int(w[0]))
+                if len(w) > 2:
+                    face_normals.append(int(w[2]))
+                else:
+                    face_normals.append(0)
                 if len(w) >= 2 and len(w[1]) > 0:
                     face_texture.append(int(w[1]))
                 else:
                     face_texture.append(0)
 
-            faces.append((face, face_texture, material))
+            faces.append((face, face_texture, face_normals, material))
 
     model = {}
     model['vertices'] = vertices
     model['texture'] = texture_coords
     model['faces'] = faces
+    model['normals'] = normals
 
     return model
 
@@ -203,8 +204,8 @@ def load_texture_from_file(texture_id, img_textura):
 
 
 # ### A lista abaixo armazena todos os vertices carregados dos arquivos
-
 vertices_list = []    
+normals_list = []
 textures_coord_list = []
 
 
@@ -219,6 +220,8 @@ for face in modelo['faces']:
         vertices_list.append( modelo['vertices'][vertice_id-1] )
     for texture_id in face[1]:
         textures_coord_list.append( modelo['texture'][texture_id-1] )
+    for normal_id in face[2]:
+        normals_list.append( modelo['normals'][normal_id - 1])
 print('Processando modelo cube.obj. Vertice final:',len(vertices_list))
 
 ### inserindo coordenadas de textura do modelo no vetor de texturas
@@ -236,6 +239,8 @@ for face in modelo['faces']:
         vertices_list.append( modelo['vertices'][vertice_id-1] )
     for texture_id in face[1]:
         textures_coord_list.append( modelo['texture'][texture_id-1] )
+    #for normal_id in face[2]:
+    #    normals_list.append( modelo['normals'][normal_id - 1])
 print('Processando modelo terreno.obj. Vertice final:',len(vertices_list))
 
 ### inserindo coordenadas de textura do modelo no vetor de texturas
@@ -253,6 +258,8 @@ for face in modelo['faces']:
         vertices_list.append( modelo['vertices'][vertice_id-1] )
     for texture_id in face[1]:
         textures_coord_list.append( modelo['texture'][texture_id-1] )
+    #for normal_id in face[2]:
+    #    normals_list.append( modelo['normals'][normal_id - 1])
 print('Processando modelo casa.obj. Vertice final:',len(vertices_list))
 
 ### inserindo coordenadas de textura do modelo no vetor de texturas
@@ -270,6 +277,8 @@ for face in modelo['faces']:
         vertices_list.append( modelo['vertices'][vertice_id-1] )
     for texture_id in face[1]:
         textures_coord_list.append( modelo['texture'][texture_id-1] )
+    #for normal_id in face[2]:
+    #    normals_list.append( modelo['normals'][normal_id - 1])
 print('Processando modelo monstro.obj. Vertice final:',len(vertices_list))
 
 ### inserindo coordenadas de textura do modelo no vetor de texturas
@@ -286,7 +295,7 @@ load_texture_from_file(3,'../texturas/monstro.jpg')
 # * Outro para enviar coordenadas de texturas.
 
 # Request a buffer slot from GPU
-buffer = glGenBuffers(2)
+buffer = glGenBuffers(3)
 
 
 # ###  Enviando coordenadas de vértices para a GPU
@@ -321,6 +330,23 @@ glEnableVertexAttribArray(loc_texture_coord)
 glVertexAttribPointer(loc_texture_coord, 2, GL_FLOAT, False, stride, offset)
 
 
+# dados de iluminacao
+normals = np.zeros(len(normals_list), [("position", np.float32, 3)])
+normals['position'] = normals_list
+
+# upload coordenadas normais de cada vertice
+glBindBuffer(GL_ARRAY_BUFFER, buffer[2])
+glBufferData(GL_ARRAY_BUFFER, normals.nbytes, normals, GL_STATIC_DRAW)
+stride = normals.strides[0]
+offset = ctypes.c_void_p(0)
+loc_normals_coord = glGetAttribLocation(program, "normals")
+glEnableVertexAttribArray(loc_normals_coord)
+glVertexAttribPointer(loc_normals_coord, 3, GL_FLOAT, False, stride, offset)
+
+# posicao da fonte de luz
+loc_light_pos = glGetUniformLocation(program, "lightPos")
+glUniform3f(loc_light_pos, -1.5, 1.7, 2.5) #posicao da fonte de luz
+
 # ### Desenhando nossos modelos
 # * Cada modelo tem uma *Model* para posicioná-los no mundo.
 # * É necessário saber qual a posição inicial e total de vértices de cada modelo.
@@ -344,6 +370,15 @@ def desenha_caixa():
     mat_model = model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z)
     loc_model = glGetUniformLocation(program, "model")
     glUniformMatrix4fv(loc_model, 1, GL_TRUE, mat_model)
+
+    ka = 0.3;
+    kd = 0.5;
+
+    loc_ka = glGetUniformLocation(program, "ka")
+    glUniform1f(loc_ka, ka)
+    
+    loc_kd = glGetUniformLocation(program, "kd")
+    glUniform1f(loc_kd, kd)
        
     #define id da textura do modelo
     glBindTexture(GL_TEXTURE_2D, 0)
@@ -564,6 +599,8 @@ while not glfw.window_should_close(window):
 
     glfw.poll_events() 
     
+    ang = 0
+    glUniform3f(loc_light_pos, math.cos(ang)*4, 0.0, math.sin(ang)*4)
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     
