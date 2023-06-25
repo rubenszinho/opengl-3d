@@ -436,7 +436,7 @@ def desenha_casa():
     t_x = 0.0; t_y = -1.0; t_z = 0.0;
     
     # escala
-    s_x = 2.0; s_y = 2.0; s_z = 2.0;
+    s_x = 3.0; s_y = 3.0; s_z = 3.0;
     
     mat_model = model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z)
     loc_model = glGetUniformLocation(program, "model")
@@ -447,7 +447,7 @@ def desenha_casa():
     
     
     # desenha o modelo
-    glDrawArrays(GL_TRIANGLES, 42, 8142-42) ## renderizando
+    glDrawArrays(GL_TRIANGLES, 42, 2082*3) ## renderizando
 
 def desenha_monstro(rotacao_inc):
     # aplica a matriz model
@@ -471,7 +471,7 @@ def desenha_monstro(rotacao_inc):
     
     
     # desenha o modelo
-    glDrawArrays(GL_TRIANGLES, 8142, 14250-8142) ## renderizando
+    glDrawArrays(GL_TRIANGLES, 6288, 6111) ## renderizando
 
 
 def desenha_sol(t_x, t_y, t_z):
@@ -482,7 +482,7 @@ def desenha_sol(t_x, t_y, t_z):
     r_x = 0.0; r_y = 0.0; r_z = 1.0;
     
     # escala
-    s_x = 1.0; s_y = 1.0; s_z = 1.0;
+    s_x = 0.5; s_y = 0.5; s_z = 0.5;
     
     mat_model = model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z)
     loc_model = glGetUniformLocation(program, "model")
@@ -513,7 +513,7 @@ def desenha_sol(t_x, t_y, t_z):
     glBindTexture(GL_TEXTURE_2D, 4)
     
     # desenha o modelo
-    glDrawArrays(GL_TRIANGLES, 14250, 1802) ## renderizando
+    glDrawArrays(GL_TRIANGLES, 12399, 321*3) ## renderizando
     
 
 # ### Eventos para modificar a posição da câmera.
@@ -660,7 +660,7 @@ while not glfw.window_should_close(window):
     desenha_monstro(rotacao_inc)
 
     ang += 0.005
-    desenha_sol(math.cos(ang)*10, math.sin(ang)*10, 0.0)
+    desenha_sol(math.cos(ang)*20, math.sin(ang)*20, 0.0)
     
     mat_view = view()
     loc_view = glGetUniformLocation(program, "view")
