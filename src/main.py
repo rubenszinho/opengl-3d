@@ -287,6 +287,22 @@ print('Processando modelo monstro.obj. Vertice final:',len(vertices_list))
 ### carregando textura equivalente e definindo um id (buffer): use um id por textura!
 load_texture_from_file(3,'../texturas/monstro.jpg')
 
+modelo = load_model_from_file('../modelos/sol.obj')
+
+### inserindo vertices do modelo no vetor de vertices
+print('Processando modelo sol.obj. Vertice inicial:',len(vertices_list))
+for face in modelo['faces']:
+    for vertice_id in face[0]:
+        vertices_list.append( modelo['vertices'][vertice_id-1] )
+    for texture_id in face[1]:
+        textures_coord_list.append( modelo['texture'][texture_id-1] )
+    #for normal_id in face[2]:
+    #    normals_list.append( modelo['normals'][normal_id - 1])
+print('Processando modelo sol.obj. Vertice final:',len(vertices_list))
+
+### inserindo coordenadas de textura do modelo no vetor de texturas
+### carregando textura equivalente e definindo um id (buffer): use um id por textura!
+load_texture_from_file(4,'../texturas/sun.jpg')
 
 # ### Para enviar nossos dados da CPU para a GPU, precisamos requisitar slots.
 # 
@@ -353,8 +369,6 @@ glUniform3f(loc_light_pos, 0.0, 1.0, 0.0) #posicao da fonte de luz
 # * É necessário indicar qual o `id` da textura do modelo.
 
 def desenha_caixa():
-    
-    
     # aplica a matriz model
     
     # rotacao
@@ -388,8 +402,6 @@ def desenha_caixa():
     glDrawArrays(GL_TRIANGLES, 0, 36) ## renderizando
 
 def desenha_terreno():
-    
-    
     # aplica a matriz model
     
     # rotacao
@@ -414,8 +426,6 @@ def desenha_terreno():
     glDrawArrays(GL_TRIANGLES, 36, 42-36) ## renderizando
 
 def desenha_casa():
-    
-    
     # aplica a matriz model
     
     # rotacao
@@ -426,7 +436,7 @@ def desenha_casa():
     t_x = 0.0; t_y = -1.0; t_z = 0.0;
     
     # escala
-    s_x = 1.0; s_y = 1.0; s_z = 1.0;
+    s_x = 2.0; s_y = 2.0; s_z = 2.0;
     
     mat_model = model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z)
     loc_model = glGetUniformLocation(program, "model")
@@ -440,8 +450,6 @@ def desenha_casa():
     glDrawArrays(GL_TRIANGLES, 42, 8142-42) ## renderizando
 
 def desenha_monstro(rotacao_inc):
-    
-    
     # aplica a matriz model
     
     # rotacao
@@ -465,6 +473,48 @@ def desenha_monstro(rotacao_inc):
     # desenha o modelo
     glDrawArrays(GL_TRIANGLES, 8142, 14250-8142) ## renderizando
 
+
+def desenha_sol(t_x, t_y, t_z):
+    # aplica a matriz model
+    
+    # rotacao
+    angle = 0.0;
+    r_x = 0.0; r_y = 0.0; r_z = 1.0;
+    
+    # escala
+    s_x = 1.0; s_y = 1.0; s_z = 1.0;
+    
+    mat_model = model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z)
+    loc_model = glGetUniformLocation(program, "model")
+    glUniformMatrix4fv(loc_model, 1, GL_TRUE, mat_model)
+       
+    #### define parametros de ilumincao do modelo
+    ka = 1 # coeficiente de reflexao ambiente do modelo
+    kd = 1 # coeficiente de reflexao difusa do modelo
+    ks = 1 # coeficiente de reflexao especular do modelo
+    ns = 1000.0 # expoente de reflexao especular
+    
+    loc_ka = glGetUniformLocation(program, "ka") # recuperando localizacao da variavel ka na GPU
+    glUniform1f(loc_ka, ka) ### envia ka pra gpu
+    
+    loc_kd = glGetUniformLocation(program, "kd") # recuperando localizacao da variavel kd na GPU
+    glUniform1f(loc_kd, kd) ### envia kd pra gpu    
+    
+    loc_ks = glGetUniformLocation(program, "ks") # recuperando localizacao da variavel ks na GPU
+    glUniform1f(loc_ks, ks) ### envia ns pra gpu        
+    
+    loc_ns = glGetUniformLocation(program, "ns") # recuperando localizacao da variavel ns na GPU
+    glUniform1f(loc_ns, ns) ### envia ns pra gpu            
+    
+    loc_light_pos = glGetUniformLocation(program, "lightPos") # recuperando localizacao da variavel lightPos na GPU
+    glUniform3f(loc_light_pos, t_x, t_y, t_z) ### posicao da fonte de luz
+
+    #define id da textura do modelo
+    glBindTexture(GL_TEXTURE_2D, 2)
+    
+    # desenha o modelo
+    glDrawArrays(GL_TRIANGLES, 14250, 1802) ## renderizando
+    
 
 # ### Eventos para modificar a posição da câmera.
 # * Usar as teclas `A`, `S`, `D`, e `W` para movimentação no espaço tridimensional.
@@ -498,7 +548,6 @@ def key_event(window,key,scancode,action,mods):
     else:
         if key == 80 and action==1 and polygonal_mode==False:
             polygonal_mode=True
-        
         
         
 firstMouse = True
@@ -537,7 +586,6 @@ def mouse_event(window, xpos, ypos):
     cameraFront = glm.normalize(front)
 
 
-    
 glfw.set_key_callback(window,key_event)
 glfw.set_cursor_pos_callback(window, mouse_event)
 
@@ -546,11 +594,9 @@ glfw.set_cursor_pos_callback(window, mouse_event)
 # Teremos uma aula específica para entender o seu funcionamento.
 
 def model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z):
-    
     angle = math.radians(angle)
     
     matrix_transform = glm.mat4(1.0) # instanciando uma matriz identidade
-
     
     # aplicando translacao
     matrix_transform = glm.translate(matrix_transform, glm.vec3(t_x, t_y, t_z))    
@@ -588,9 +634,6 @@ glfw.set_cursor_pos(window, lastX, lastY)
 # ### Loop principal da janela.
 # Enquanto a janela não for fechada, esse laço será executado. É neste espaço que trabalhamos com algumas interações com a `OpenGL`.
 
-# In[ ]:
-
-
 glEnable(GL_DEPTH_TEST) ### importante para 3D
    
 
@@ -600,9 +643,6 @@ while not glfw.window_should_close(window):
 
     glfw.poll_events() 
     
-    ang += 0.005
-    glUniform3f(loc_light_pos, math.cos(ang)*10, math.sin(ang)*10, 0.0)
-    
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     
     glClearColor(1.0, 1.0, 1.0, 1.0)
@@ -611,8 +651,6 @@ while not glfw.window_should_close(window):
         glPolygonMode(GL_FRONT_AND_BACK,GL_LINE)
     if polygonal_mode==False:
         glPolygonMode(GL_FRONT_AND_BACK,GL_FILL)
-    
-    
 
     desenha_caixa()   
     desenha_terreno()
@@ -620,6 +658,9 @@ while not glfw.window_should_close(window):
     
     rotacao_inc += 0.1
     desenha_monstro(rotacao_inc)
+
+    ang += 0.005
+    desenha_sol(math.cos(ang)*10, math.sin(ang)*10, 0.0)
     
     mat_view = view()
     loc_view = glGetUniformLocation(program, "view")
@@ -630,5 +671,4 @@ while not glfw.window_should_close(window):
     glUniformMatrix4fv(loc_projection, 1, GL_TRUE, mat_projection)    
     
     glfw.swap_buffers(window)
-
 glfw.terminate()
