@@ -510,7 +510,7 @@ def desenha_sol(t_x, t_y, t_z):
     glUniform3f(loc_light_pos, t_x, t_y, t_z) ### posicao da fonte de luz
 
     #define id da textura do modelo
-    glBindTexture(GL_TEXTURE_2D, 2)
+    glBindTexture(GL_TEXTURE_2D, 4)
     
     # desenha o modelo
     glDrawArrays(GL_TRIANGLES, 14250, 1802) ## renderizando
