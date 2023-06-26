@@ -211,7 +211,7 @@ textures_coord_list = []
 
 # ### Carregamos cada modelo e definimos funções para desenhá-los
 
-modelo = load_model_from_file('../modelos/caixa.obj')
+modelo = load_model_from_file('../modelos/lake.obj')
 
 ### inserindo vertices do modelo no vetor de vertices
 print('Processando modelo caixa.obj. Vertice inicial:',len(vertices_list))
@@ -228,7 +228,7 @@ print('Processando modelo caixa.obj. Vertice final:',len(vertices_list))
 
 
 ### carregando textura equivalente e definindo um id (buffer): use um id por textura!
-load_texture_from_file(0,'../texturas/caixa2.jpg')
+load_texture_from_file(0,'../texturas/water.jpg')
 
 modelo = load_model_from_file('../modelos/terreno2.obj')
 
@@ -249,7 +249,7 @@ print('Processando modelo terreno.obj. Vertice final:',len(vertices_list))
 ### carregando textura equivalente e definindo um id (buffer): use um id por textura!
 load_texture_from_file(1,'../texturas/grama.jpg')
 
-modelo = load_model_from_file('../modelos/medieval-house.obj')
+modelo = load_model_from_file('../modelos/snow-cottage.obj')
 
 ### inserindo vertices do modelo no vetor de vertices
 print('Processando modelo medieval-house.obj. Vertice inicial:',len(vertices_list))
@@ -266,9 +266,9 @@ print('Processando modelo medieval-house.obj. Vertice final:',len(vertices_list)
 
 
 ### carregando textura equivalente e definindo um id (buffer): use um id por textura!
-load_texture_from_file(2,'../texturas/caixa2.jpg')
+load_texture_from_file(2,'../texturas/snow-cottage.jpg')
 
-modelo = load_model_from_file('../modelos/monstro.obj')
+modelo = load_model_from_file('../modelos/boat.obj')
 
 ### inserindo vertices do modelo no vetor de vertices
 print('Processando modelo monstro.obj. Vertice inicial:',len(vertices_list))
@@ -277,15 +277,15 @@ for face in modelo['faces']:
         vertices_list.append( modelo['vertices'][vertice_id-1] )
     for texture_id in face[1]:
         textures_coord_list.append( modelo['texture'][texture_id-1] )
-    #for normal_id in face[2]:
-    #    normals_list.append( modelo['normals'][normal_id - 1])
+    for normal_id in face[2]:
+        normals_list.append( modelo['normals'][normal_id - 1])
 print('Processando modelo monstro.obj. Vertice final:',len(vertices_list))
 
 ### inserindo coordenadas de textura do modelo no vetor de texturas
 
 
 ### carregando textura equivalente e definindo um id (buffer): use um id por textura!
-load_texture_from_file(3,'../texturas/monstro.jpg')
+load_texture_from_file(3,'../texturas/boat.jpg')
 
 modelo = load_model_from_file('../modelos/sol.obj')
 
@@ -368,7 +368,7 @@ glUniform3f(loc_light_pos, 0.0, 1.0, 0.0) #posicao da fonte de luz
 # * É necessário saber qual a posição inicial e total de vértices de cada modelo.
 # * É necessário indicar qual o `id` da textura do modelo.
 
-def desenha_caixa():
+def desenha_lago():
     # aplica a matriz model
     
     # rotacao
@@ -376,10 +376,10 @@ def desenha_caixa():
     r_x = 0.0; r_y = 0.0; r_z = 1.0;
     
     # translacao
-    t_x = 0.0; t_y = 0.0; t_z = 15.0;
+    t_x = -10.0; t_y = -1.0; t_z = -30.0;
     
     # escala
-    s_x = 1.0; s_y = 1.0; s_z = 1.0;
+    s_x = 6.0; s_y = 6.0; s_z = 6.0; 
     
     mat_model = model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z)
     loc_model = glGetUniformLocation(program, "model")
@@ -399,7 +399,7 @@ def desenha_caixa():
     
     
     # desenha o modelo
-    glDrawArrays(GL_TRIANGLES, 0, 36) ## renderizando
+    glDrawArrays(GL_TRIANGLES, 0, 124*3) ## renderizando
 
 def desenha_terreno():
     # aplica a matriz model
@@ -412,7 +412,7 @@ def desenha_terreno():
     t_x = 0.0; t_y = -1.01; t_z = 0.0;
     
     # escala
-    s_x = 20.0; s_y = 20.0; s_z = 20.0;
+    s_x = 40.0; s_y = 40.0; s_z = 40.0;
     
     mat_model = model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z)
     loc_model = glGetUniformLocation(program, "model")
@@ -423,7 +423,7 @@ def desenha_terreno():
     
     
     # desenha o modelo
-    glDrawArrays(GL_TRIANGLES, 36, 42-36) ## renderizando
+    glDrawArrays(GL_TRIANGLES, 372, 6) ## renderizando
 
 def desenha_casa():
     # aplica a matriz model
@@ -436,7 +436,7 @@ def desenha_casa():
     t_x = 0.0; t_y = -1.0; t_z = 0.0;
     
     # escala
-    s_x = 3.0; s_y = 3.0; s_z = 3.0;
+    s_x = 0.3; s_y = 0.3; s_z = 0.3;
     
     mat_model = model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z)
     loc_model = glGetUniformLocation(program, "model")
@@ -447,9 +447,9 @@ def desenha_casa():
     
     
     # desenha o modelo
-    glDrawArrays(GL_TRIANGLES, 42, 2082*3) ## renderizando
+    glDrawArrays(GL_TRIANGLES, 378, 594*3) ## renderizando
 
-def desenha_monstro(rotacao_inc):
+def desenha_barco(rotacao_inc):
     # aplica a matriz model
     
     # rotacao
@@ -457,10 +457,10 @@ def desenha_monstro(rotacao_inc):
     r_x = 0.0; r_y = 1.0; r_z = 0.0;
     
     # translacao
-    t_x = 0.0; t_y = -1.0; t_z = 0.0;
+    t_x = -10.0; t_y = -1.0; t_z = -25.0;
     
     # escala
-    s_x = 1.0; s_y = 1.0; s_z = 1.0;
+    s_x = 0.3; s_y = 0.3; s_z = 0.3;
     
     mat_model = model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z)
     loc_model = glGetUniformLocation(program, "model")
@@ -471,7 +471,7 @@ def desenha_monstro(rotacao_inc):
     
     
     # desenha o modelo
-    glDrawArrays(GL_TRIANGLES, 6288, 6111) ## renderizando
+    glDrawArrays(GL_TRIANGLES, 2160, 168*3) ## renderizando
 
 
 def desenha_sol(t_x, t_y, t_z):
@@ -513,7 +513,7 @@ def desenha_sol(t_x, t_y, t_z):
     glBindTexture(GL_TEXTURE_2D, 4)
     
     # desenha o modelo
-    glDrawArrays(GL_TRIANGLES, 12399, 321*3) ## renderizando
+    glDrawArrays(GL_TRIANGLES, 2664, 321*3) ## renderizando
     
 
 # ### Eventos para modificar a posição da câmera.
@@ -652,15 +652,15 @@ while not glfw.window_should_close(window):
     if polygonal_mode==False:
         glPolygonMode(GL_FRONT_AND_BACK,GL_FILL)
 
-    desenha_caixa()   
+    desenha_lago()   
     desenha_terreno()
     desenha_casa()
     
     rotacao_inc += 0.1
-    desenha_monstro(rotacao_inc)
+    desenha_barco(rotacao_inc)
 
     ang += 0.005
-    desenha_sol(math.cos(ang)*20, math.sin(ang)*20, 0.0)
+    desenha_sol(math.cos(ang)*30, math.sin(ang)*30, 0.0)
     
     mat_view = view()
     loc_view = glGetUniformLocation(program, "view")
