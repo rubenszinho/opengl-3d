@@ -583,7 +583,7 @@ def key_event(window, key, scancode, action, mods):
 
     # Definindo o recorte(clamp) de visualização do cenário
     cameraPos.x = max(min(cameraPos.x, cam_limit_x), -cam_limit_x)
-    cameraPos.y = max(min(cameraPos.y, cam_limit_y), -cam_limit_y)
+    cameraPos.y = max(min(cameraPos.y, cam_limit_y), 0)
     cameraPos.z = max(min(cameraPos.z, cam_limit_z), -cam_limit_z)
     
     if key == 80 and action==1 and polygonal_mode==True:
