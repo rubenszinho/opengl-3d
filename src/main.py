@@ -296,8 +296,8 @@ for face in modelo['faces']:
         vertices_list.append( modelo['vertices'][vertice_id-1] )
     for texture_id in face[1]:
         textures_coord_list.append( modelo['texture'][texture_id-1] )
-    #for normal_id in face[2]:
-    #    normals_list.append( modelo['normals'][normal_id - 1])
+    for normal_id in face[2]:
+        normals_list.append( modelo['normals'][normal_id - 1])
 print('Processando modelo sol.obj. Vertice final:',len(vertices_list))
 
 ### inserindo coordenadas de textura do modelo no vetor de texturas
@@ -364,8 +364,8 @@ for face in modelo['faces']:
         vertices_list.append( modelo['vertices'][vertice_id-1] )
     for texture_id in face[1]:
         textures_coord_list.append( modelo['texture'][texture_id-1] )
-    #for normal_id in face[2]:
-    #    normals_list.append( modelo['normals'][normal_id - 1])
+    for normal_id in face[2]:
+        normals_list.append( modelo['normals'][normal_id - 1])
 print('Processando modelo sol.obj. Vertice final:',len(vertices_list))
 
 ### inserindo coordenadas de textura do modelo no vetor de texturas
@@ -631,7 +631,7 @@ def desenha_sol(t_x, t_y, t_z):
     glBindTexture(GL_TEXTURE_2D, 4)
     
     # desenha o modelo
-    glDrawArrays(GL_TRIANGLES, 2664, 321*3) ## renderizando
+    glDrawArrays(GL_TRIANGLES, 2664, 320*3) ## renderizando
     
 def desenha_sofa():
     # aplica a matriz model
@@ -655,7 +655,7 @@ def desenha_sofa():
     
     
     # desenha o modelo
-    glDrawArrays(GL_TRIANGLES, 3627, 16140*3) ## renderizando
+    glDrawArrays(GL_TRIANGLES, 3624, 16140*3) ## renderizando
 
 def desenha_rack():
     # aplica a matriz model
@@ -679,7 +679,7 @@ def desenha_rack():
     
     
     # desenha o modelo
-    glDrawArrays(GL_TRIANGLES, 52047, 4896*3) ## renderizando
+    glDrawArrays(GL_TRIANGLES, 52044, 4896*3) ## renderizando
 
 def desenha_tv():
     # aplica a matriz model
@@ -703,7 +703,7 @@ def desenha_tv():
     
     
     # desenha o modelo
-    glDrawArrays(GL_TRIANGLES, 66735, 58*3) ## renderizando
+    glDrawArrays(GL_TRIANGLES, 66732, 58*3) ## renderizando
 
 def desenha_pedra():
     # aplica a matriz model
@@ -727,7 +727,7 @@ def desenha_pedra():
     
     
     # desenha o modelo
-    glDrawArrays(GL_TRIANGLES, 66909, 192*3) ## renderizando
+    glDrawArrays(GL_TRIANGLES, 66906, 192*3) ## renderizando
 
 def desenha_arvore():
     # aplica a matriz model
@@ -751,7 +751,7 @@ def desenha_arvore():
     
     
     # desenha o modelo
-    glDrawArrays(GL_TRIANGLES, 67485, 2170*3) ## renderizando
+    glDrawArrays(GL_TRIANGLES, 67482, 2170*3) ## renderizando
 
 def desenha_arvore_sem_folha():
     # aplica a matriz model
@@ -775,7 +775,7 @@ def desenha_arvore_sem_folha():
     
     
     # desenha o modelo
-    glDrawArrays(GL_TRIANGLES, 73995, 2460*3) ## renderizando
+    glDrawArrays(GL_TRIANGLES, 73992, 2460*3) ## renderizando
 
 def desenha_ceu():
     # aplica a matriz model
@@ -799,7 +799,7 @@ def desenha_ceu():
     
     
     # desenha o modelo
-    glDrawArrays(GL_TRIANGLES, 81375, 12*3) ## renderizando
+    glDrawArrays(GL_TRIANGLES, 81372, 12*3) ## renderizando
 
 # ### Eventos para modificar a posição da câmera.
 # * Usar as teclas `A`, `S`, `D`, e `W` para movimentação no espaço tridimensional.
@@ -952,7 +952,7 @@ while not glfw.window_should_close(window):
     desenha_barco(rotacao_inc)
 
     ang += 0.005
-    desenha_sol(math.cos(ang)*30, math.sin(ang)*30, 0.0)
+    desenha_sol(math.cos(ang)*38, math.sin(ang)*38, 0.0)
 
     desenha_sofa()
     desenha_rack()
