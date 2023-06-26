@@ -449,20 +449,19 @@ def desenha_casa():
     # desenha o modelo
     glDrawArrays(GL_TRIANGLES, 378, 594*3) ## renderizando
 
-def desenha_barco(rotacao_inc):
+def desenha_barco(angle):
     # aplica a matriz model
     
     # rotacao
-    angle = rotacao_inc;
     r_x = 0.0; r_y = 1.0; r_z = 0.0;
     
     # translacao
-    t_x = -10.0; t_y = -1.0; t_z = -25.0;
+    t_x = -10.0 + math.cos(angle)*4; t_y = -1.0; t_z = -30.0 + math.sin(angle)*4;
     
     # escala
     s_x = 0.3; s_y = 0.3; s_z = 0.3;
     
-    mat_model = model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z)
+    mat_model = model(-angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z)
     loc_model = glGetUniformLocation(program, "model")
     glUniformMatrix4fv(loc_model, 1, GL_TRUE, mat_model)
        
@@ -656,7 +655,7 @@ while not glfw.window_should_close(window):
     desenha_terreno()
     desenha_casa()
     
-    rotacao_inc += 0.1
+    rotacao_inc += 0.01
     desenha_barco(rotacao_inc)
 
     ang += 0.005
