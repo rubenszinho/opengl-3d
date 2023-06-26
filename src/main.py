@@ -648,10 +648,10 @@ def desenha_rack():
     r_x = 0.0; r_y = 1.0; r_z = 0.0;
     
     # translacao
-    t_x = 0.0; t_y = 0.3; t_z = 0.0;
+    t_x = 0.0; t_y = -1.0; t_z = 0.0;
     
     # escala
-    s_x = 1.0; s_y = 1.0; s_z = 1.0; 
+    s_x = 0.2; s_y = 0.2; s_z = 0.2; 
     
     mat_model = model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z)
     loc_model = glGetUniformLocation(program, "model")
@@ -672,7 +672,7 @@ def desenha_tv():
     r_x = 0.0; r_y = 1.0; r_z = 0.0;
     
     # translacao
-    t_x = 0.0; t_y = 0.3; t_z = 0.0;
+    t_x = 0.0; t_y = -1.0; t_z = 0.0;
     
     # escala
     s_x = 1.0; s_y = 1.0; s_z = 1.0; 
@@ -696,7 +696,7 @@ def desenha_pedra():
     r_x = 0.0; r_y = 1.0; r_z = 0.0;
     
     # translacao
-    t_x = 0.0; t_y = 0.3; t_z = 0.0;
+    t_x = 0.0; t_y = 0.3; t_z = 10.0;
     
     # escala
     s_x = 1.0; s_y = 1.0; s_z = 1.0; 
@@ -710,7 +710,7 @@ def desenha_pedra():
     
     
     # desenha o modelo
-    glDrawArrays(GL_TRIANGLES, 0, 58*3) ## renderizando
+    glDrawArrays(GL_TRIANGLES, 66909, 192*3) ## renderizando
 
 def desenha_arvore():
     # aplica a matriz model
@@ -720,7 +720,7 @@ def desenha_arvore():
     r_x = 0.0; r_y = 1.0; r_z = 0.0;
     
     # translacao
-    t_x = 0.0; t_y = 0.3; t_z = 0.0;
+    t_x = 0.0; t_y = 0.3; t_z = -10.0;
     
     # escala
     s_x = 1.0; s_y = 1.0; s_z = 1.0; 
@@ -734,7 +734,7 @@ def desenha_arvore():
     
     
     # desenha o modelo
-    glDrawArrays(GL_TRIANGLES, 0, 2170*3) ## renderizando
+    glDrawArrays(GL_TRIANGLES, 67485, 2170*3) ## renderizando
 
 def desenha_arvore_sem_folha():
     # aplica a matriz model
@@ -744,7 +744,7 @@ def desenha_arvore_sem_folha():
     r_x = 0.0; r_y = 1.0; r_z = 0.0;
     
     # translacao
-    t_x = 0.0; t_y = 0.3; t_z = 0.0;
+    t_x = 3.0; t_y = 0.3; t_z = 10.0;
     
     # escala
     s_x = 1.0; s_y = 1.0; s_z = 1.0; 
@@ -758,7 +758,7 @@ def desenha_arvore_sem_folha():
     
     
     # desenha o modelo
-    glDrawArrays(GL_TRIANGLES, 0, 2460*3) ## renderizando
+    glDrawArrays(GL_TRIANGLES, 73995, 2460*3) ## renderizando
 
 # ### Eventos para modificar a posição da câmera.
 # * Usar as teclas `A`, `S`, `D`, e `W` para movimentação no espaço tridimensional.
@@ -915,6 +915,10 @@ while not glfw.window_should_close(window):
 
     desenha_sofa()
     desenha_rack()
+    desenha_tv()
+    desenha_pedra()
+    desenha_arvore()
+    desenha_arvore_sem_folha()
     
     mat_view = view()
     loc_view = glGetUniformLocation(program, "view")
