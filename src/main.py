@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+# Grupo
+# Arthur Pin 12691964
+# Samuel Rubens Souza Oliveira 11912533
 
 import glfw
 from OpenGL.GL import *
@@ -8,7 +11,7 @@ import glm
 import math
 from PIL import Image
 
-# ### Inicializando janela
+# Inicializando janela
 glfw.init()
 glfw.window_hint(glfw.VISIBLE, glfw.FALSE);
 altura = 1200
@@ -38,7 +41,7 @@ vertex_code = """
         """
 
 
-# ### `GLSL` para *Fragment Shader*
+# `GLSL` para *Fragment Shader*
 fragment_code = """
         uniform vec3 lightPos;
         uniform float ka;
@@ -66,7 +69,7 @@ fragment_code = """
         """
 
 
-# ### Requisitando slot para a GPU para nossos programas *Vertex* e *Fragment Shaders*
+# Requisitando slot para a GPU para nossos programas *Vertex* e *Fragment Shaders*
 
 # Request a program and shader slots from GPU
 program  = glCreateProgram()
@@ -74,14 +77,14 @@ vertex   = glCreateShader(GL_VERTEX_SHADER)
 fragment = glCreateShader(GL_FRAGMENT_SHADER)
 
 
-# ### Associando nosso código-fonte aos slots solicitados
+# Associando nosso código-fonte aos slots solicitados
 
 # Set shaders source
 glShaderSource(vertex, vertex_code)
 glShaderSource(fragment, fragment_code)
 
 
-# ### Compilando o *Vertex Shader*
+# Compilando o *Vertex Shader*
 # Se há algum erro em nosso programa *Vertex Shader*, nosso app para por aqui.
 
 # Compile shaders
@@ -92,7 +95,7 @@ if not glGetShaderiv(vertex, GL_COMPILE_STATUS):
     raise RuntimeError("Erro de compilacao do Vertex Shader")
 
 
-# ### Compilando o *Fragment Shader*
+# Compilando o *Fragment Shader*
 # Se há algum erro em nosso programa *Fragment Shader*, nosso app para por aqui.
 
 glCompileShader(fragment)
@@ -102,14 +105,14 @@ if not glGetShaderiv(fragment, GL_COMPILE_STATUS):
     raise RuntimeError("Erro de compilacao do Fragment Shader")
 
 
-# ### Associando os programas compilados ao programa principal
+# Associando os programas compilados ao programa principal
 
 # Attach shader objects to the program
 glAttachShader(program, vertex)
 glAttachShader(program, fragment)
 
 
-# ### Linkagem do programa
+# Linkagem do programa
 
 # Build program
 glLinkProgram(program)
@@ -121,11 +124,11 @@ if not glGetProgramiv(program, GL_LINK_STATUS):
 glUseProgram(program)
 
 
-# ### Preparando dados para enviar à GPU
+# Preparando dados para enviar à GPU
 # Nesse momento, compilamos nossos *Vertex* e *Fragment Shaders* para que a GPU possa processá-los.
 # 
 # Por outro lado, as informações de vértices geralmente estão na CPU e devem ser transmitidas para a GPU.
-# ### Carregando Modelos (vértices e texturas) a partir de Arquivos
+# Carregando Modelos (vértices e texturas) a partir de Arquivos
 # A função abaixo carrega modelos a partir de arquivos no formato *WaveFront*.
 
 def load_model_from_file(filename):
@@ -145,18 +148,18 @@ def load_model_from_file(filename):
         if not values: continue
 
 
-        ### recuperando vertices
+        # recuperando vertices
         if values[0] == 'v':
             vertices.append(values[1:4])
 
         if values[0] == 'vn':
             normals.append(values[1:4])
 
-        ### recuperando coordenadas de textura
+        # recuperando coordenadas de textura
         elif values[0] == 'vt':
             texture_coords.append(values[1:3])
 
-        ### recuperando faces 
+        # recuperando faces 
         elif values[0] in ('usemtl', 'usemat'):
             material = values[1]
         elif values[0] == 'f':
@@ -203,18 +206,18 @@ def load_texture_from_file(texture_id, img_textura):
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img_width, img_height, 0, GL_RGB, GL_UNSIGNED_BYTE, image_data)
 
 
-# ### A lista abaixo armazena todos os vertices carregados dos arquivos
+# A lista abaixo armazena todos os vertices carregados dos arquivos
 vertices_list = []    
 normals_list = []
 textures_coord_list = []
 
 
-# ### Carregamos cada modelo e definimos funções para desenhá-los
+# Carregamos cada modelo e definimos funções para desenhá-los
 
 modelo = load_model_from_file('../modelos/lake.obj')
 
-### inserindo vertices do modelo no vetor de vertices
-print('Processando modelo caixa.obj. Vertice inicial:',len(vertices_list))
+# inserindo vertices do modelo no vetor de vertices
+print('Processando modelo lake.obj. Vertice inicial:',len(vertices_list))
 for face in modelo['faces']:
     for vertice_id in face[0]:
         vertices_list.append( modelo['vertices'][vertice_id-1] )
@@ -222,17 +225,17 @@ for face in modelo['faces']:
         textures_coord_list.append( modelo['texture'][texture_id-1] )
     for normal_id in face[2]:
         normals_list.append( modelo['normals'][normal_id - 1])
-print('Processando modelo caixa.obj. Vertice final:',len(vertices_list))
+print('Processando modelo lake.obj. Vertice final:',len(vertices_list))
 
-### inserindo coordenadas de textura do modelo no vetor de texturas
+# inserindo coordenadas de textura do modelo no vetor de texturas
 
 
-### carregando textura equivalente e definindo um id (buffer): use um id por textura!
+# carregando textura equivalente e definindo um id (buffer): use um id por textura!
 load_texture_from_file(0,'../texturas/water.jpg')
 
 modelo = load_model_from_file('../modelos/terreno2.obj')
 
-### inserindo vertices do modelo no vetor de vertices
+# inserindo vertices do modelo no vetor de vertices
 print('Processando modelo terreno.obj. Vertice inicial:',len(vertices_list))
 for face in modelo['faces']:
     for vertice_id in face[0]:
@@ -243,16 +246,16 @@ for face in modelo['faces']:
         normals_list.append( modelo['normals'][normal_id - 1])
 print('Processando modelo terreno.obj. Vertice final:',len(vertices_list))
 
-### inserindo coordenadas de textura do modelo no vetor de texturas
+# inserindo coordenadas de textura do modelo no vetor de texturas
 
 
-### carregando textura equivalente e definindo um id (buffer): use um id por textura!
+# carregando textura equivalente e definindo um id (buffer): use um id por textura!
 load_texture_from_file(1,'../texturas/grama.jpg')
 
 modelo = load_model_from_file('../modelos/snow-cottage.obj')
 
-### inserindo vertices do modelo no vetor de vertices
-print('Processando modelo medieval-house.obj. Vertice inicial:',len(vertices_list))
+# inserindo vertices do modelo no vetor de vertices
+print('Processando modelo snow-cottage.obj. Vertice inicial:',len(vertices_list))
 for face in modelo['faces']:
     for vertice_id in face[0]:
         vertices_list.append( modelo['vertices'][vertice_id-1] )
@@ -260,18 +263,18 @@ for face in modelo['faces']:
         textures_coord_list.append( modelo['texture'][texture_id-1] )
     for normal_id in face[2]:
         normals_list.append( modelo['normals'][normal_id - 1])
-print('Processando modelo medieval-house.obj. Vertice final:',len(vertices_list))
+print('Processando modelo snow-cottage.obj. Vertice final:',len(vertices_list))
 
-### inserindo coordenadas de textura do modelo no vetor de texturas
+# inserindo coordenadas de textura do modelo no vetor de texturas
 
 
-### carregando textura equivalente e definindo um id (buffer): use um id por textura!
+# carregando textura equivalente e definindo um id (buffer): use um id por textura!
 load_texture_from_file(2,'../texturas/snow-cottage.jpg')
 
 modelo = load_model_from_file('../modelos/boat.obj')
 
-### inserindo vertices do modelo no vetor de vertices
-print('Processando modelo monstro.obj. Vertice inicial:',len(vertices_list))
+# inserindo vertices do modelo no vetor de vertices
+print('Processando modelo boat.obj. Vertice inicial:',len(vertices_list))
 for face in modelo['faces']:
     for vertice_id in face[0]:
         vertices_list.append( modelo['vertices'][vertice_id-1] )
@@ -279,17 +282,17 @@ for face in modelo['faces']:
         textures_coord_list.append( modelo['texture'][texture_id-1] )
     for normal_id in face[2]:
         normals_list.append( modelo['normals'][normal_id - 1])
-print('Processando modelo monstro.obj. Vertice final:',len(vertices_list))
+print('Processando modelo boat.obj. Vertice final:',len(vertices_list))
 
-### inserindo coordenadas de textura do modelo no vetor de texturas
+# inserindo coordenadas de textura do modelo no vetor de texturas
 
 
-### carregando textura equivalente e definindo um id (buffer): use um id por textura!
+# carregando textura equivalente e definindo um id (buffer): use um id por textura!
 load_texture_from_file(3,'../texturas/boat.jpg')
 
 modelo = load_model_from_file('../modelos/sol.obj')
 
-### inserindo vertices do modelo no vetor de vertices
+# inserindo vertices do modelo no vetor de vertices
 print('Processando modelo sol.obj. Vertice inicial:',len(vertices_list))
 for face in modelo['faces']:
     for vertice_id in face[0]:
@@ -300,13 +303,13 @@ for face in modelo['faces']:
         normals_list.append( modelo['normals'][normal_id - 1])
 print('Processando modelo sol.obj. Vertice final:',len(vertices_list))
 
-### inserindo coordenadas de textura do modelo no vetor de texturas
-### carregando textura equivalente e definindo um id (buffer): use um id por textura!
+# inserindo coordenadas de textura do modelo no vetor de texturas
+# carregando textura equivalente e definindo um id (buffer): use um id por textura!
 load_texture_from_file(4,'../texturas/sun.jpg')
 
 modelo = load_model_from_file('../modelos/sofa.obj')
 
-### inserindo vertices do modelo no vetor de vertices
+# inserindo vertices do modelo no vetor de vertices
 print('Processando modelo sol.obj. Vertice inicial:',len(vertices_list))
 for face in modelo['faces']:
     for vertice_id in face[0]:
@@ -317,13 +320,13 @@ for face in modelo['faces']:
         normals_list.append( modelo['normals'][normal_id - 1])
 print('Processando modelo sol.obj. Vertice final:',len(vertices_list))
 
-### inserindo coordenadas de textura do modelo no vetor de texturas
-### carregando textura equivalente e definindo um id (buffer): use um id por textura!
+# inserindo coordenadas de textura do modelo no vetor de texturas
+# carregando textura equivalente e definindo um id (buffer): use um id por textura!
 load_texture_from_file(5,'../texturas/sofa.jpg')
 
 modelo = load_model_from_file('../modelos/rack.obj')
 
-### inserindo vertices do modelo no vetor de vertices
+# inserindo vertices do modelo no vetor de vertices
 print('Processando modelo sol.obj. Vertice inicial:',len(vertices_list))
 for face in modelo['faces']:
     for vertice_id in face[0]:
@@ -334,13 +337,13 @@ for face in modelo['faces']:
         normals_list.append( modelo['normals'][normal_id - 1])
 print('Processando modelo sol.obj. Vertice final:',len(vertices_list))
 
-### inserindo coordenadas de textura do modelo no vetor de texturas
-### carregando textura equivalente e definindo um id (buffer): use um id por textura!
+# inserindo coordenadas de textura do modelo no vetor de texturas
+# carregando textura equivalente e definindo um id (buffer): use um id por textura!
 load_texture_from_file(6,'../texturas/rack.png')
 
 modelo = load_model_from_file('../modelos/TV.obj')
 
-### inserindo vertices do modelo no vetor de vertices
+# inserindo vertices do modelo no vetor de vertices
 print('Processando modelo sol.obj. Vertice inicial:',len(vertices_list))
 for face in modelo['faces']:
     for vertice_id in face[0]:
@@ -351,13 +354,13 @@ for face in modelo['faces']:
         normals_list.append( modelo['normals'][normal_id - 1])
 print('Processando modelo sol.obj. Vertice final:',len(vertices_list))
 
-### inserindo coordenadas de textura do modelo no vetor de texturas
-### carregando textura equivalente e definindo um id (buffer): use um id por textura!
+# inserindo coordenadas de textura do modelo no vetor de texturas
+# carregando textura equivalente e definindo um id (buffer): use um id por textura!
 load_texture_from_file(7,'../texturas/tv.jpg')
 
 modelo = load_model_from_file('../modelos/rock.obj')
 
-### inserindo vertices do modelo no vetor de vertices
+# inserindo vertices do modelo no vetor de vertices
 print('Processando modelo sol.obj. Vertice inicial:',len(vertices_list))
 for face in modelo['faces']:
     for vertice_id in face[0]:
@@ -368,13 +371,13 @@ for face in modelo['faces']:
         normals_list.append( modelo['normals'][normal_id - 1])
 print('Processando modelo sol.obj. Vertice final:',len(vertices_list))
 
-### inserindo coordenadas de textura do modelo no vetor de texturas
-### carregando textura equivalente e definindo um id (buffer): use um id por textura!
+# inserindo coordenadas de textura do modelo no vetor de texturas
+# carregando textura equivalente e definindo um id (buffer): use um id por textura!
 load_texture_from_file(8,'../texturas/rock.jpg')
 
 modelo = load_model_from_file('../modelos/tree.obj')
 
-### inserindo vertices do modelo no vetor de vertices
+# inserindo vertices do modelo no vetor de vertices
 print('Processando modelo sol.obj. Vertice inicial:',len(vertices_list))
 for face in modelo['faces']:
     for vertice_id in face[0]:
@@ -385,13 +388,13 @@ for face in modelo['faces']:
         normals_list.append( modelo['normals'][normal_id - 1])
 print('Processando modelo sol.obj. Vertice final:',len(vertices_list))
 
-### inserindo coordenadas de textura do modelo no vetor de texturas
-### carregando textura equivalente e definindo um id (buffer): use um id por textura!
+# inserindo coordenadas de textura do modelo no vetor de texturas
+# carregando textura equivalente e definindo um id (buffer): use um id por textura!
 load_texture_from_file(9,'../texturas/tree.jpg')
 
 modelo = load_model_from_file('../modelos/tree_without_leaves.obj')
 
-### inserindo vertices do modelo no vetor de vertices
+# inserindo vertices do modelo no vetor de vertices
 print('Processando modelo sol.obj. Vertice inicial:',len(vertices_list))
 for face in modelo['faces']:
     for vertice_id in face[0]:
@@ -402,13 +405,13 @@ for face in modelo['faces']:
         normals_list.append( modelo['normals'][normal_id - 1])
 print('Processando modelo sol.obj. Vertice final:',len(vertices_list))
 
-### inserindo coordenadas de textura do modelo no vetor de texturas
-### carregando textura equivalente e definindo um id (buffer): use um id por textura!
+# inserindo coordenadas de textura do modelo no vetor de texturas
+# carregando textura equivalente e definindo um id (buffer): use um id por textura!
 load_texture_from_file(10,'../texturas/tree_without_leaves.jpg')
 
 modelo = load_model_from_file('../modelos/sky.obj')
 
-### inserindo vertices do modelo no vetor de vertices
+# inserindo vertices do modelo no vetor de vertices
 print('Processando modelo sol.obj. Vertice inicial:',len(vertices_list))
 for face in modelo['faces']:
     for vertice_id in face[0]:
@@ -419,11 +422,11 @@ for face in modelo['faces']:
         normals_list.append( modelo['normals'][normal_id - 1])
 print('Processando modelo sol.obj. Vertice final:',len(vertices_list))
 
-### inserindo coordenadas de textura do modelo no vetor de texturas
-### carregando textura equivalente e definindo um id (buffer): use um id por textura!
+# inserindo coordenadas de textura do modelo no vetor de texturas
+# carregando textura equivalente e definindo um id (buffer): use um id por textura!
 load_texture_from_file(11,'../texturas/sky.jpg')
 
-# ### Para enviar nossos dados da CPU para a GPU, precisamos requisitar slots.
+# Para enviar nossos dados da CPU para a GPU, precisamos requisitar slots.
 # 
 # Agora requisitamos dois slots.
 # * Um para enviar coordenadas dos vértices.
@@ -433,7 +436,7 @@ load_texture_from_file(11,'../texturas/sky.jpg')
 buffer = glGenBuffers(3)
 
 
-# ###  Enviando coordenadas de vértices para a GPU
+# Enviando coordenadas de vértices para a GPU
 
 vertices = np.zeros(len(vertices_list), [("position", np.float32, 3)])
 vertices['position'] = vertices_list
@@ -449,7 +452,7 @@ glEnableVertexAttribArray(loc_vertices)
 glVertexAttribPointer(loc_vertices, 3, GL_FLOAT, False, stride, offset)
 
 
-# ###  Enviando coordenadas de textura para a GPU
+# Enviando coordenadas de textura para a GPU
 
 textures = np.zeros(len(textures_coord_list), [("position", np.float32, 2)]) # duas coordenadas
 textures['position'] = textures_coord_list
@@ -482,7 +485,7 @@ glVertexAttribPointer(loc_normals_coord, 3, GL_FLOAT, False, stride, offset)
 loc_light_pos = glGetUniformLocation(program, "lightPos")
 glUniform3f(loc_light_pos, 0.0, 1.0, 0.0) #posicao da fonte de luz
 
-# ### Desenhando nossos modelos
+# Desenhando nossos modelos
 # * Cada modelo tem uma *Model* para posicioná-los no mundo.
 # * É necessário saber qual a posição inicial e total de vértices de cada modelo.
 # * É necessário indicar qual o `id` da textura do modelo.
@@ -606,26 +609,26 @@ def desenha_sol(t_x, t_y, t_z):
     loc_model = glGetUniformLocation(program, "model")
     glUniformMatrix4fv(loc_model, 1, GL_TRUE, mat_model)
        
-    #### define parametros de ilumincao do modelo
+    ## define parametros de ilumincao do modelo
     ka = 1 # coeficiente de reflexao ambiente do modelo
     kd = 1 # coeficiente de reflexao difusa do modelo
     ks = 1 # coeficiente de reflexao especular do modelo
     ns = 1000.0 # expoente de reflexao especular
     
     loc_ka = glGetUniformLocation(program, "ka") # recuperando localizacao da variavel ka na GPU
-    glUniform1f(loc_ka, ka) ### envia ka pra gpu
+    glUniform1f(loc_ka, ka) # envia ka pra gpu
     
     loc_kd = glGetUniformLocation(program, "kd") # recuperando localizacao da variavel kd na GPU
-    glUniform1f(loc_kd, kd) ### envia kd pra gpu    
+    glUniform1f(loc_kd, kd) # envia kd pra gpu    
     
     loc_ks = glGetUniformLocation(program, "ks") # recuperando localizacao da variavel ks na GPU
-    glUniform1f(loc_ks, ks) ### envia ns pra gpu        
+    glUniform1f(loc_ks, ks) # envia ns pra gpu        
     
     loc_ns = glGetUniformLocation(program, "ns") # recuperando localizacao da variavel ns na GPU
-    glUniform1f(loc_ns, ns) ### envia ns pra gpu            
+    glUniform1f(loc_ns, ns) # envia ns pra gpu            
     
     loc_light_pos = glGetUniformLocation(program, "lightPos") # recuperando localizacao da variavel lightPos na GPU
-    glUniform3f(loc_light_pos, t_x, t_y, t_z) ### posicao da fonte de luz
+    glUniform3f(loc_light_pos, t_x, t_y, t_z) # posicao da fonte de luz
 
     #define id da textura do modelo
     glBindTexture(GL_TEXTURE_2D, 4)
@@ -801,7 +804,7 @@ def desenha_ceu():
     # desenha o modelo
     glDrawArrays(GL_TRIANGLES, 81372, 12*3) ## renderizando
 
-# ### Eventos para modificar a posição da câmera.
+# Eventos para modificar a posição da câmera.
 # * Usar as teclas `A`, `S`, `D`, e `W` para movimentação no espaço tridimensional.
 # * Usar a posição do mouse para "direcionar" a câmera.
 
@@ -814,6 +817,8 @@ polygonal_mode = False
 def key_event(window, key, scancode, action, mods):
     global cameraPos, cameraFront, cameraUp, polygonal_mode
     
+    # Terreno está na origem (0,0,0) e considerou-se as escalas atribuidas as este no desenho do objeto
+    # Definindo os limites da câmera relativos à escala do terreno
     cam_limit_x = 40
     cam_limit_y = 25
     cam_limit_z = 40
@@ -882,7 +887,7 @@ glfw.set_key_callback(window,key_event)
 glfw.set_cursor_pos_callback(window, mouse_event)
 
 
-# ### Matrizes *Model*, *View*, e *Projection*
+# Matrizes *Model*, *View*, e *Projection*
 # Teremos uma aula específica para entender o seu funcionamento.
 
 def model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z):
@@ -917,16 +922,16 @@ def projection():
     return mat_projection
 
 
-# ### Nesse momento, exibimos a janela.
+# Nesse momento, exibimos a janela.
 
 glfw.show_window(window)
 glfw.set_cursor_pos(window, lastX, lastY)
 
 
-# ### Loop principal da janela.
+# Loop principal da janela.
 # Enquanto a janela não for fechada, esse laço será executado. É neste espaço que trabalhamos com algumas interações com a `OpenGL`.
 
-glEnable(GL_DEPTH_TEST) ### importante para 3D
+glEnable(GL_DEPTH_TEST) # importante para 3D
    
 
 rotacao_inc = 0
