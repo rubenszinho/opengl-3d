@@ -406,6 +406,23 @@ print('Processando modelo sol.obj. Vertice final:',len(vertices_list))
 ### carregando textura equivalente e definindo um id (buffer): use um id por textura!
 load_texture_from_file(10,'../texturas/tree_without_leaves.jpg')
 
+modelo = load_model_from_file('../modelos/sky.obj')
+
+### inserindo vertices do modelo no vetor de vertices
+print('Processando modelo sol.obj. Vertice inicial:',len(vertices_list))
+for face in modelo['faces']:
+    for vertice_id in face[0]:
+        vertices_list.append( modelo['vertices'][vertice_id-1] )
+    for texture_id in face[1]:
+        textures_coord_list.append( modelo['texture'][texture_id-1] )
+    for normal_id in face[2]:
+        normals_list.append( modelo['normals'][normal_id - 1])
+print('Processando modelo sol.obj. Vertice final:',len(vertices_list))
+
+### inserindo coordenadas de textura do modelo no vetor de texturas
+### carregando textura equivalente e definindo um id (buffer): use um id por textura!
+load_texture_from_file(11,'../texturas/sky.jpg')
+
 # ### Para enviar nossos dados da CPU para a GPU, precisamos requisitar slots.
 # 
 # Agora requisitamos dois slots.
@@ -478,10 +495,10 @@ def desenha_lago():
     r_x = 0.0; r_y = 0.0; r_z = 1.0;
     
     # translacao
-    t_x = -10.0; t_y = -1.0; t_z = -30.0;
+    t_x = -20.0; t_y = -1.0; t_z = -5.0;
     
     # escala
-    s_x = 6.0; s_y = 6.0; s_z = 6.0; 
+    s_x = 9.0; s_y = 9.0; s_z = 14.0; 
     
     mat_model = model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z)
     loc_model = glGetUniformLocation(program, "model")
@@ -558,7 +575,7 @@ def desenha_barco(angle):
     r_x = 0.0; r_y = 1.0; r_z = 0.0;
     
     # translacao
-    t_x = -10.0 + math.cos(angle)*4; t_y = -1.0; t_z = -30.0 + math.sin(angle)*4;
+    t_x = -20.0 + math.cos(angle)*4; t_y = -1.0; t_z = -5.0 + math.sin(angle)*4;
     
     # escala
     s_x = 0.3; s_y = 0.3; s_z = 0.3;
@@ -644,11 +661,11 @@ def desenha_rack():
     # aplica a matriz model
     
     # rotacao
-    angle = 0.0;
+    angle = -90.0;
     r_x = 0.0; r_y = 1.0; r_z = 0.0;
     
     # translacao
-    t_x = 0.0; t_y = -1.0; t_z = 0.0;
+    t_x = -5.0; t_y = -1.0; t_z = -7.5;
     
     # escala
     s_x = 0.2; s_y = 0.2; s_z = 0.2; 
@@ -672,10 +689,10 @@ def desenha_tv():
     r_x = 0.0; r_y = 1.0; r_z = 0.0;
     
     # translacao
-    t_x = 0.0; t_y = -1.0; t_z = 0.0;
+    t_x = -7.0; t_y = -2.7; t_z = 0.0;
     
     # escala
-    s_x = 1.0; s_y = 1.0; s_z = 1.0; 
+    s_x = 0.5; s_y = 0.5; s_z = 0.5; 
     
     mat_model = model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z)
     loc_model = glGetUniformLocation(program, "model")
@@ -696,7 +713,7 @@ def desenha_pedra():
     r_x = 0.0; r_y = 1.0; r_z = 0.0;
     
     # translacao
-    t_x = 0.0; t_y = 0.3; t_z = 10.0;
+    t_x = -15.0; t_y = -1.0; t_z = 20.0;
     
     # escala
     s_x = 1.0; s_y = 1.0; s_z = 1.0; 
@@ -720,7 +737,7 @@ def desenha_arvore():
     r_x = 0.0; r_y = 1.0; r_z = 0.0;
     
     # translacao
-    t_x = 0.0; t_y = 0.3; t_z = -10.0;
+    t_x = 30.0; t_y = -4.0; t_z = -30.0;
     
     # escala
     s_x = 1.0; s_y = 1.0; s_z = 1.0; 
@@ -744,10 +761,10 @@ def desenha_arvore_sem_folha():
     r_x = 0.0; r_y = 1.0; r_z = 0.0;
     
     # translacao
-    t_x = 3.0; t_y = 0.3; t_z = 10.0;
+    t_x = 30.0; t_y = -1.0; t_z = 30.0;
     
     # escala
-    s_x = 1.0; s_y = 1.0; s_z = 1.0; 
+    s_x = 2.0; s_y = 2.0; s_z = 2.0; 
     
     mat_model = model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z)
     loc_model = glGetUniformLocation(program, "model")
@@ -759,6 +776,30 @@ def desenha_arvore_sem_folha():
     
     # desenha o modelo
     glDrawArrays(GL_TRIANGLES, 73995, 2460*3) ## renderizando
+
+def desenha_ceu():
+    # aplica a matriz model
+    
+    # rotacao
+    angle = 0.0;
+    r_x = 0.0; r_y = 1.0; r_z = 0.0;
+    
+    # translacao
+    t_x = 0.0; t_y = 0; t_z = 0.0;
+    
+    # escala
+    s_x = 40.0; s_y = 40.0; s_z = 40.0; 
+    
+    mat_model = model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z)
+    loc_model = glGetUniformLocation(program, "model")
+    glUniformMatrix4fv(loc_model, 1, GL_TRUE, mat_model)
+       
+    #define id da textura do modelo
+    glBindTexture(GL_TEXTURE_2D, 11)
+    
+    
+    # desenha o modelo
+    glDrawArrays(GL_TRIANGLES, 81375, 12*3) ## renderizando
 
 # ### Eventos para modificar a posição da câmera.
 # * Usar as teclas `A`, `S`, `D`, e `W` para movimentação no espaço tridimensional.
@@ -919,6 +960,7 @@ while not glfw.window_should_close(window):
     desenha_pedra()
     desenha_arvore()
     desenha_arvore_sem_folha()
+    desenha_ceu()
     
     mat_view = view()
     loc_view = glGetUniformLocation(program, "view")
