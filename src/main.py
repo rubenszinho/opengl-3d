@@ -387,7 +387,7 @@ print('Processando modelo sol.obj. Vertice final:',len(vertices_list))
 
 ### inserindo coordenadas de textura do modelo no vetor de texturas
 ### carregando textura equivalente e definindo um id (buffer): use um id por textura!
-load_texture_from_file(9,'../texturas/tree.png')
+load_texture_from_file(9,'../texturas/tree.jpg')
 
 modelo = load_model_from_file('../modelos/tree_without_leaves.obj')
 
