@@ -320,6 +320,92 @@ print('Processando modelo sol.obj. Vertice final:',len(vertices_list))
 ### inserindo coordenadas de textura do modelo no vetor de texturas
 ### carregando textura equivalente e definindo um id (buffer): use um id por textura!
 load_texture_from_file(5,'../texturas/sofa.jpg')
+
+modelo = load_model_from_file('../modelos/rack.obj')
+
+### inserindo vertices do modelo no vetor de vertices
+print('Processando modelo sol.obj. Vertice inicial:',len(vertices_list))
+for face in modelo['faces']:
+    for vertice_id in face[0]:
+        vertices_list.append( modelo['vertices'][vertice_id-1] )
+    for texture_id in face[1]:
+        textures_coord_list.append( modelo['texture'][texture_id-1] )
+    for normal_id in face[2]:
+        normals_list.append( modelo['normals'][normal_id - 1])
+print('Processando modelo sol.obj. Vertice final:',len(vertices_list))
+
+### inserindo coordenadas de textura do modelo no vetor de texturas
+### carregando textura equivalente e definindo um id (buffer): use um id por textura!
+load_texture_from_file(6,'../texturas/rack.png')
+
+modelo = load_model_from_file('../modelos/TV.obj')
+
+### inserindo vertices do modelo no vetor de vertices
+print('Processando modelo sol.obj. Vertice inicial:',len(vertices_list))
+for face in modelo['faces']:
+    for vertice_id in face[0]:
+        vertices_list.append( modelo['vertices'][vertice_id-1] )
+    for texture_id in face[1]:
+        textures_coord_list.append( modelo['texture'][texture_id-1] )
+    for normal_id in face[2]:
+        normals_list.append( modelo['normals'][normal_id - 1])
+print('Processando modelo sol.obj. Vertice final:',len(vertices_list))
+
+### inserindo coordenadas de textura do modelo no vetor de texturas
+### carregando textura equivalente e definindo um id (buffer): use um id por textura!
+load_texture_from_file(7,'../texturas/tv.jpg')
+
+modelo = load_model_from_file('../modelos/rock.obj')
+
+### inserindo vertices do modelo no vetor de vertices
+print('Processando modelo sol.obj. Vertice inicial:',len(vertices_list))
+for face in modelo['faces']:
+    for vertice_id in face[0]:
+        vertices_list.append( modelo['vertices'][vertice_id-1] )
+    for texture_id in face[1]:
+        textures_coord_list.append( modelo['texture'][texture_id-1] )
+    #for normal_id in face[2]:
+    #    normals_list.append( modelo['normals'][normal_id - 1])
+print('Processando modelo sol.obj. Vertice final:',len(vertices_list))
+
+### inserindo coordenadas de textura do modelo no vetor de texturas
+### carregando textura equivalente e definindo um id (buffer): use um id por textura!
+load_texture_from_file(8,'../texturas/rock.jpg')
+
+modelo = load_model_from_file('../modelos/tree.obj')
+
+### inserindo vertices do modelo no vetor de vertices
+print('Processando modelo sol.obj. Vertice inicial:',len(vertices_list))
+for face in modelo['faces']:
+    for vertice_id in face[0]:
+        vertices_list.append( modelo['vertices'][vertice_id-1] )
+    for texture_id in face[1]:
+        textures_coord_list.append( modelo['texture'][texture_id-1] )
+    for normal_id in face[2]:
+        normals_list.append( modelo['normals'][normal_id - 1])
+print('Processando modelo sol.obj. Vertice final:',len(vertices_list))
+
+### inserindo coordenadas de textura do modelo no vetor de texturas
+### carregando textura equivalente e definindo um id (buffer): use um id por textura!
+load_texture_from_file(9,'../texturas/tree.png')
+
+modelo = load_model_from_file('../modelos/tree_without_leaves.obj')
+
+### inserindo vertices do modelo no vetor de vertices
+print('Processando modelo sol.obj. Vertice inicial:',len(vertices_list))
+for face in modelo['faces']:
+    for vertice_id in face[0]:
+        vertices_list.append( modelo['vertices'][vertice_id-1] )
+    for texture_id in face[1]:
+        textures_coord_list.append( modelo['texture'][texture_id-1] )
+    for normal_id in face[2]:
+        normals_list.append( modelo['normals'][normal_id - 1])
+print('Processando modelo sol.obj. Vertice final:',len(vertices_list))
+
+### inserindo coordenadas de textura do modelo no vetor de texturas
+### carregando textura equivalente e definindo um id (buffer): use um id por textura!
+load_texture_from_file(10,'../texturas/tree_without_leaves.jpg')
+
 # ### Para enviar nossos dados da CPU para a GPU, precisamos requisitar slots.
 # 
 # Agora requisitamos dois slots.
@@ -554,6 +640,126 @@ def desenha_sofa():
     # desenha o modelo
     glDrawArrays(GL_TRIANGLES, 3627, 16140*3) ## renderizando
 
+def desenha_rack():
+    # aplica a matriz model
+    
+    # rotacao
+    angle = 0.0;
+    r_x = 0.0; r_y = 1.0; r_z = 0.0;
+    
+    # translacao
+    t_x = 0.0; t_y = 0.3; t_z = 0.0;
+    
+    # escala
+    s_x = 1.0; s_y = 1.0; s_z = 1.0; 
+    
+    mat_model = model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z)
+    loc_model = glGetUniformLocation(program, "model")
+    glUniformMatrix4fv(loc_model, 1, GL_TRUE, mat_model)
+       
+    #define id da textura do modelo
+    glBindTexture(GL_TEXTURE_2D, 6)
+    
+    
+    # desenha o modelo
+    glDrawArrays(GL_TRIANGLES, 52047, 4896*3) ## renderizando
+
+def desenha_tv():
+    # aplica a matriz model
+    
+    # rotacao
+    angle = 0.0;
+    r_x = 0.0; r_y = 1.0; r_z = 0.0;
+    
+    # translacao
+    t_x = 0.0; t_y = 0.3; t_z = 0.0;
+    
+    # escala
+    s_x = 1.0; s_y = 1.0; s_z = 1.0; 
+    
+    mat_model = model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z)
+    loc_model = glGetUniformLocation(program, "model")
+    glUniformMatrix4fv(loc_model, 1, GL_TRUE, mat_model)
+       
+    #define id da textura do modelo
+    glBindTexture(GL_TEXTURE_2D, 7)
+    
+    
+    # desenha o modelo
+    glDrawArrays(GL_TRIANGLES, 66735, 58*3) ## renderizando
+
+def desenha_pedra():
+    # aplica a matriz model
+    
+    # rotacao
+    angle = 0.0;
+    r_x = 0.0; r_y = 1.0; r_z = 0.0;
+    
+    # translacao
+    t_x = 0.0; t_y = 0.3; t_z = 0.0;
+    
+    # escala
+    s_x = 1.0; s_y = 1.0; s_z = 1.0; 
+    
+    mat_model = model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z)
+    loc_model = glGetUniformLocation(program, "model")
+    glUniformMatrix4fv(loc_model, 1, GL_TRUE, mat_model)
+       
+    #define id da textura do modelo
+    glBindTexture(GL_TEXTURE_2D, 8)
+    
+    
+    # desenha o modelo
+    glDrawArrays(GL_TRIANGLES, 0, 58*3) ## renderizando
+
+def desenha_arvore():
+    # aplica a matriz model
+    
+    # rotacao
+    angle = 0.0;
+    r_x = 0.0; r_y = 1.0; r_z = 0.0;
+    
+    # translacao
+    t_x = 0.0; t_y = 0.3; t_z = 0.0;
+    
+    # escala
+    s_x = 1.0; s_y = 1.0; s_z = 1.0; 
+    
+    mat_model = model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z)
+    loc_model = glGetUniformLocation(program, "model")
+    glUniformMatrix4fv(loc_model, 1, GL_TRUE, mat_model)
+       
+    #define id da textura do modelo
+    glBindTexture(GL_TEXTURE_2D, 9)
+    
+    
+    # desenha o modelo
+    glDrawArrays(GL_TRIANGLES, 0, 2170*3) ## renderizando
+
+def desenha_arvore_sem_folha():
+    # aplica a matriz model
+    
+    # rotacao
+    angle = 0.0;
+    r_x = 0.0; r_y = 1.0; r_z = 0.0;
+    
+    # translacao
+    t_x = 0.0; t_y = 0.3; t_z = 0.0;
+    
+    # escala
+    s_x = 1.0; s_y = 1.0; s_z = 1.0; 
+    
+    mat_model = model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z)
+    loc_model = glGetUniformLocation(program, "model")
+    glUniformMatrix4fv(loc_model, 1, GL_TRUE, mat_model)
+       
+    #define id da textura do modelo
+    glBindTexture(GL_TEXTURE_2D, 10)
+    
+    
+    # desenha o modelo
+    glDrawArrays(GL_TRIANGLES, 0, 2460*3) ## renderizando
+
 # ### Eventos para modificar a posição da câmera.
 # * Usar as teclas `A`, `S`, `D`, e `W` para movimentação no espaço tridimensional.
 # * Usar a posição do mouse para "direcionar" a câmera.
@@ -564,10 +770,13 @@ cameraUp    = glm.vec3(0.0,  1.0,  0.0);
 
 
 polygonal_mode = False
-
 def key_event(window, key, scancode, action, mods):
     global cameraPos, cameraFront, cameraUp, polygonal_mode
     
+    cam_limit_x = 40
+    cam_limit_y = 25
+    cam_limit_z = 40
+
     cameraSpeed = 0.2
     if key == 87 and (action==1 or action==2): # tecla W
         cameraPos += cameraSpeed * cameraFront
@@ -591,7 +800,6 @@ def key_event(window, key, scancode, action, mods):
     else:
         if key == 80 and action==1 and polygonal_mode==False:
             polygonal_mode=True
-
         
 firstMouse = True
 yaw = -90.0 
@@ -679,11 +887,6 @@ glfw.set_cursor_pos(window, lastX, lastY)
 
 glEnable(GL_DEPTH_TEST) ### importante para 3D
    
-# Terreno está na origem (0,0,0) e considerou-se as escalas atribuidas as este no desenho do objeto
-# Definindo os limites da câmera relativos à escala do terreno
-cam_limit_x = 40
-cam_limit_y = 25
-cam_limit_z = 40
 
 rotacao_inc = 0
 ang = 0
@@ -711,6 +914,7 @@ while not glfw.window_should_close(window):
     desenha_sol(math.cos(ang)*30, math.sin(ang)*30, 0.0)
 
     desenha_sofa()
+    desenha_rack()
     
     mat_view = view()
     loc_view = glGetUniformLocation(program, "view")
