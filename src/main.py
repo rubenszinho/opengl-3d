@@ -526,28 +526,33 @@ cameraUp    = glm.vec3(0.0,  1.0,  0.0);
 
 polygonal_mode = False
 
-def key_event(window,key,scancode,action,mods):
+def key_event(window, key, scancode, action, mods):
     global cameraPos, cameraFront, cameraUp, polygonal_mode
     
     cameraSpeed = 0.2
     if key == 87 and (action==1 or action==2): # tecla W
         cameraPos += cameraSpeed * cameraFront
-    
+
     if key == 83 and (action==1 or action==2): # tecla S
         cameraPos -= cameraSpeed * cameraFront
-    
+
     if key == 65 and (action==1 or action==2): # tecla A
         cameraPos -= glm.normalize(glm.cross(cameraFront, cameraUp)) * cameraSpeed
-        
+
     if key == 68 and (action==1 or action==2): # tecla D
         cameraPos += glm.normalize(glm.cross(cameraFront, cameraUp)) * cameraSpeed
-        
+
+    # Definindo o recorte(clamp) de visualização do cenário
+    cameraPos.x = max(min(cameraPos.x, cam_limit_x), -cam_limit_x)
+    cameraPos.y = max(min(cameraPos.y, cam_limit_y), -cam_limit_y)
+    cameraPos.z = max(min(cameraPos.z, cam_limit_z), -cam_limit_z)
+    
     if key == 80 and action==1 and polygonal_mode==True:
         polygonal_mode=False
     else:
         if key == 80 and action==1 and polygonal_mode==False:
             polygonal_mode=True
-        
+
         
 firstMouse = True
 yaw = -90.0 
@@ -635,6 +640,11 @@ glfw.set_cursor_pos(window, lastX, lastY)
 
 glEnable(GL_DEPTH_TEST) ### importante para 3D
    
+# Terreno está na origem (0,0,0) e considerou-se as escalas atribuidas as este no desenho do objeto
+# Definindo os limites da câmera relativos à escala do terreno
+cam_limit_x = 40
+cam_limit_y = 25
+cam_limit_z = 40
 
 rotacao_inc = 0
 ang = 0
