@@ -304,6 +304,22 @@ print('Processando modelo sol.obj. Vertice final:',len(vertices_list))
 ### carregando textura equivalente e definindo um id (buffer): use um id por textura!
 load_texture_from_file(4,'../texturas/sun.jpg')
 
+modelo = load_model_from_file('../modelos/sofa.obj')
+
+### inserindo vertices do modelo no vetor de vertices
+print('Processando modelo sol.obj. Vertice inicial:',len(vertices_list))
+for face in modelo['faces']:
+    for vertice_id in face[0]:
+        vertices_list.append( modelo['vertices'][vertice_id-1] )
+    for texture_id in face[1]:
+        textures_coord_list.append( modelo['texture'][texture_id-1] )
+    for normal_id in face[2]:
+        normals_list.append( modelo['normals'][normal_id - 1])
+print('Processando modelo sol.obj. Vertice final:',len(vertices_list))
+
+### inserindo coordenadas de textura do modelo no vetor de texturas
+### carregando textura equivalente e definindo um id (buffer): use um id por textura!
+load_texture_from_file(5,'../texturas/sofa.jpg')
 # ### Para enviar nossos dados da CPU para a GPU, precisamos requisitar slots.
 # 
 # Agora requisitamos dois slots.
@@ -514,6 +530,29 @@ def desenha_sol(t_x, t_y, t_z):
     # desenha o modelo
     glDrawArrays(GL_TRIANGLES, 2664, 321*3) ## renderizando
     
+def desenha_sofa():
+    # aplica a matriz model
+    
+    # rotacao
+    angle = -90.0;
+    r_x = 0.0; r_y = 1.0; r_z = 0.0;
+    
+    # translacao
+    t_x = 6.0; t_y = 0.3; t_z = 0.0;
+    
+    # escala
+    s_x = 4.0; s_y = 4.0; s_z = 4.0; 
+    
+    mat_model = model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z)
+    loc_model = glGetUniformLocation(program, "model")
+    glUniformMatrix4fv(loc_model, 1, GL_TRUE, mat_model)
+       
+    #define id da textura do modelo
+    glBindTexture(GL_TEXTURE_2D, 5)
+    
+    
+    # desenha o modelo
+    glDrawArrays(GL_TRIANGLES, 3627, 16140*3) ## renderizando
 
 # ### Eventos para modificar a posição da câmera.
 # * Usar as teclas `A`, `S`, `D`, e `W` para movimentação no espaço tridimensional.
@@ -670,6 +709,8 @@ while not glfw.window_should_close(window):
 
     ang += 0.005
     desenha_sol(math.cos(ang)*30, math.sin(ang)*30, 0.0)
+
+    desenha_sofa()
     
     mat_view = view()
     loc_view = glGetUniformLocation(program, "view")
